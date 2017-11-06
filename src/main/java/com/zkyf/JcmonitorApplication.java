@@ -1,0 +1,15 @@
+package com.zkyf;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class JcmonitorApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(JcmonitorApplication.class, args);
+	}
+
+
+
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>list</title>
+    <link href="../layui/css/layui.css" rel="stylesheet"/>
+</head>
+<body style="height: 100%;">
+<table id="demo"  lay-filter="test">
+</table>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-mini" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-mini" lay-event="del">删除</a>
+
+    <!-- 这里同样支持 laytpl 语法，如：
+    {{#  if(d.auth > 2){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="check">审核</a>
+    {{#  } }}
+     -->
+</script>
+<script src="../layui/layui.all.js"></script>
+<script type="text/javascript">
+    var table = layui.table;
+    //执行渲染
+    table.render({
+        elem: '#demo' //指定原始表格元素选择器（推荐id选择器)
+        ,height: 'full-20'
+        ,even:true
+        ,cols:  [[ //标题栏
+            {checkbox: true}
+            ,{field: 'id', title: 'ID', width: 80,sort:true,edit:'text'}
+            ,{field: 'username', title: '用户名',width:150}
+            ,{fixed: 'right', width:150, align:'center', toolbar: '#barDemo',fixed:'right'}
+        ]]
+        ,data:[{"id":111,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'},{"id":222,"username":'hehehe'}]
+        ,page: true
+    });
+</script>
+
+</body>
+</html>

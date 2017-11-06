@@ -1,0 +1,80 @@
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:include="/fragment/head::head"></div>
+</head>
+<body>
+<div class="">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <ul class="layui-nav layui-nav-right">
+                <li class="layui-nav-item">
+                    <a onclick="message()" >警告<span class="layui-badge">9</span></a>
+                </li>
+                <li class="layui-nav-item">
+                    <a ><img class="layui-nav-img"/>管理员</a>
+                </li>
+            </ul>
+            <span  style=" display: inline-block;line-height: 60px;color: #fff;font-size: 26px; cursor: pointer; margin-left: 10px;">金财网业务健康情况实时监测系统</span>
+        </div>
+
+        <div class="layui-body ">
+            <div class="layui-tab layui-tab-brief " style="margin:0;position:absolute;top:4px;bottom:0px;width:100%;" lay-filter="tab" lay-allowclose="true">
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <table class="layui-table">
+                            <thead>
+                                <tr>
+                                    <th>IP</th>
+                                    <th>状态</th>
+                                    <th>日志</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td th:text="${ips}"></td>
+                                <td style="color: green">正常</td>
+                                <td>日志</td>
+                            </tr>
+                            <tr>
+                                <td th:text="${ips}"></td>
+                                <td style="color: red">异常</td>
+                                <td><a onclick="log()">日志</a></td>
+                            </tr>
+                            <tr>
+                                <td th:text="${ips}"></td>
+                                <td style="color: green">正常</td>
+                                <td>日志</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div th:include="/fragment/head::script"></div>
+<!-- layui规范化用法 -->
+<script type="text/javascript">
+    layui.config({
+        base: '../layui/js/'
+    }).use('home');
+    function message() {
+        layer.open({
+            title:"报警日志",
+            type: 2,
+            area: ['500px', '300px'],
+            content: '/message'
+        });
+    }
+    function log() {
+        layer.open({
+            title:"日志",
+            type: 2,
+            area: ['500px', '300px'],
+            content: '/log'
+        });
+    }
+</script>
+</body>
+
+</html>
