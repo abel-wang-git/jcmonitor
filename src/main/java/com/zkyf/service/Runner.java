@@ -1,5 +1,6 @@
 package com.zkyf.service;
 
+import com.zkyf.ctrl.Wb;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,18 +11,15 @@ import org.slf4j.Logger;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+import javax.annotation.Resource;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -29,31 +27,36 @@ import java.util.Date;
  */
 @Component
 public class Runner implements CommandLineRunner {
-    private Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Resource
+    private Croe croe;
+    @Resource
+    private Wb wb;
+    private Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+
     @Value("${jc.ips}") private  String host;
     @Override
     public void run(String... strings) throws Exception {
-        SimpleDateFormat sdf =   new SimpleDateFormat( " yyyy-MM-dd HH:mm:ss " );
 
-        Process pro = null;
-        String line = null;
-        try {
-            pro = Runtime.getRuntime().exec("ping " +decrypt("123",host) +" -t");
-            BufferedReader buf = new BufferedReader(new InputStreamReader(pro.getInputStream(), Charset.forName("GBK")));
-            while((line = buf.readLine()) != null)
-                logger.error(line);
-                /*jdbcTemplate.update("insert into log VALUE ("+sdf.format(new Date())+","+line+")");*/
-
-     } catch (IOException e) {
-            e.printStackTrace();
+          String[] hosts = host.split(",");
+        for (String ip: hosts) {
+            List list=croe.findHost(decrypt("123",ip));
+            if(list.size()==0){
+                croe.insertHost(2,decrypt("123",ip));
+            }
+            Ping ping = new Ping();
+            ping.setIp(ip);
+            ping.setTsCtrl(wb);
+            ping.setJdbcTemplate(jdbcTemplate);
+            Thread thread = new Thread(ping);
+            thread.start();
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(encrypt("192.168.88.33","123").toString());
-        System.out.println(decrypt("123","VeA+2TGHD1XYwdoxkfm/Sg=="));
+        System.out.println(encrypt("192.168.88.44","123").toString());
+        System.out.println(decrypt("123","/TsI6RHijh4+n9jIlfgSQg=="));
 
     }
 

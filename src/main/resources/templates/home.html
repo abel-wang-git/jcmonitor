@@ -8,7 +8,7 @@
         <div class="layui-header">
             <ul class="layui-nav layui-nav-right">
                 <li class="layui-nav-item">
-                    <a onclick="message()" >警告<span class="layui-badge">9</span></a>
+                    <a onclick="message()" >警告<span id="counterr" class="layui-badge" th:text="${count}"></span></a>
                 </li>
                 <li class="layui-nav-item">
                     <a ><img class="layui-nav-img"/>管理员</a>
@@ -29,21 +29,14 @@
                                     <th>日志</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td th:text="${ips}"></td>
-                                <td style="color: green">正常</td>
-                                <td>日志</td>
+
+                            <tr th:each="a:${ips}">
+                                <td th:attr="id=${a['ip']}" th:text="${a['ip']}"></td>
+                                <td class="status" style="color: green" th:if="${a['status']=='2'}">正常</td>
+                                <td class="status" style="color: red" th:if="${a['status']=='1'}">异常</td>
+                                <td><a onclick="log(this)">日志</a></td>
                             </tr>
-                            <tr>
-                                <td th:text="${ips}"></td>
-                                <td style="color: red">异常</td>
-                                <td><a onclick="log()">日志</a></td>
-                            </tr>
-                            <tr>
-                                <td th:text="${ips}"></td>
-                                <td style="color: green">正常</td>
-                                <td>日志</td>
-                            </tr>
+
                         </table>
                     </div>
                 </div>
@@ -59,21 +52,82 @@
         base: '../layui/js/'
     }).use('home');
     function message() {
-        layer.open({
-            title:"报警日志",
-            type: 2,
-            area: ['500px', '300px'],
-            content: '/message'
+        $.post('/error', {}, function(str){
+            layer.open({
+                title:"报警日志",
+                type: 1,
+                area: ['500px', '300px'],
+                content: str, //注意，如果str是object，那么需要字符拼接。
+                cancel: function(index, layero){
+                    $.post("/countErr",function (data) {
+                        $("#counterr").text(Number(data));
+                    });
+                }
+            });
         });
     }
-    function log() {
-        layer.open({
-            title:"日志",
-            type: 2,
-            area: ['500px', '300px'],
-            content: '/log'
+    function log(thiz) {
+        $.post('/log', {ip:$(thiz).parent().parent().find('td:first').text()}, function(str){
+            layer.open({
+                type: 1,
+                area: ['500px', '300px'],
+                content: str //注意，如果str是object，那么需要字符拼接。
+            });
         });
     }
+
+    var stompClient = null;
+
+    var websocket = null;
+
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://localhost:8080/websocket");
+    }
+    else {
+        alert('Not support websocket')
+    }
+
+    //连接发生错误的回调方法
+    websocket.onerror = function () {
+    };
+
+    //连接成功建立的回调方法
+    websocket.onopen = function (event) {
+    }
+
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        setMessageInnerHTML(event.data);
+    }
+
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+    }
+
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        websocket.close();
+    }
+
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        var a = $.parseJSON(innerHTML).ip;
+        alert($("#"+a.replace(".","\\\\.")).text())
+        $("#"+$.parseJSON(innerHTML).ip).text(innerHTML)
+    }
+
+    //关闭连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+
+    //发送消息
+    function send() {
+        var message = document.getElementById('text').value;
+        websocket.send(message);
+    }
+
 </script>
 </body>
 
