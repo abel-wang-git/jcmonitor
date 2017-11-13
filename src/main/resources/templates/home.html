@@ -31,8 +31,8 @@
                             </thead>
 
                             <tr th:each="a:${ips}">
-                                <td th:attr="id=${a['ip']}" th:text="${a['ip']}"></td>
-                                <td class="status" style="color: green" th:if="${a['status']=='2'}">正常</td>
+                                <td th:text="${a['ip']}"></td>
+                                <td th:attr="id=${a['id']}"  class="status" style="color: green" th:if="${a['status']=='2'}">正常</td>
                                 <td class="status" style="color: red" th:if="${a['status']=='1'}">异常</td>
                                 <td><a onclick="log(this)">日志</a></td>
                             </tr>
@@ -76,8 +76,6 @@
         });
     }
 
-    var stompClient = null;
-
     var websocket = null;
 
     //判断当前浏览器是否支持WebSocket
@@ -112,9 +110,8 @@
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
-        var a = $.parseJSON(innerHTML).ip;
-        alert($("#"+a.replace(".","\\\\.")).text())
-        $("#"+$.parseJSON(innerHTML).ip).text(innerHTML)
+        var stat= $.parseJSON(innerHTML).status==1?'正常':'异常';
+        $("#"+$.parseJSON(innerHTML).id).text(stat);
     }
 
     //关闭连接

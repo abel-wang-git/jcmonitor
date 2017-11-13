@@ -1,7 +1,6 @@
 package com.zkyf.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.zkyf.ctrl.Wb;
 import com.zkyf.entity.Log;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -49,24 +48,27 @@ public class Ping implements  Runnable{
         Process pro = null;
         String line = null;
         BufferedReader buf=null;
-        int status =2;
+        int status =1;
         try {
-            pro = Runtime.getRuntime().exec("ping " + decrypt("123",ip) +" -t");
+            pro = Runtime.getRuntime().exec("ping " + decrypt("123",ip));
             buf = new BufferedReader(new InputStreamReader(pro.getInputStream(), Charset.forName("GBK")));
             int type;
             while((line = buf.readLine()) != null){
+                System.out.println(line);
                 type=(line.contains("ttl")||line.contains("TTL"))? Log.INFO:Log.ERROR;
                 if(!line.equals(""))
                     jdbcTemplate.update("insert into log ( `date`,`message`,`type`,`host`) VALUE ('"+
                             sdf.format(new Date())+"','"+line+"',"+type+",'"+decrypt("123",ip)+"')");
                 if(type!=status){
                     jdbcTemplate.update("UPDATE host SET status=? WHERE  ip=?",type,decrypt("123",ip));
-                    Map<String,String> map = new HashMap<>();
-                    map.put("ip",decrypt("123",ip));
+                    Long id= jdbcTemplate.queryForObject("SELECT id FROM host WHERE ip=?",Long.class,decrypt("123",ip));
+                    Map<String,Object> map = new HashMap<>();
+                    map.put("id",id);
                     map.put("status",status+"");
                     tsCtrl.onMessage(JSON.toJSONString(map),null);
+                    status=type;
+                    System.out.println(type+"===="+status);
                 }
-
                 Thread.sleep(1000);
             }
         } catch (IOException e) {

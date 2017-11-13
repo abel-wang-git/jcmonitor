@@ -51,4 +51,9 @@ public class Croe {
         List list = jdbcTemplate.queryForList("SELECT  * FROM  host ");
         return list;
     }
+
+    public  List findByIp(String ip){
+       List list =  jdbcTemplate.queryForList("select * from host WHERE ip=?",ip);
+        return list;
+    }
 }
