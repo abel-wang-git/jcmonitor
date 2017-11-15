@@ -17,6 +17,10 @@ public class Log {
     private  String host;
     private  String date;
     private  String message;
+    /**
+     * ERROR==1
+     * INFO=2
+     */
     private  int type;
 
     public String getHost() {

@@ -48,26 +48,25 @@ public class Ping implements  Runnable{
         Process pro = null;
         String line = null;
         BufferedReader buf=null;
-        int status =1;
+        int status =2;
         try {
-            pro = Runtime.getRuntime().exec("ping " + decrypt("123",ip));
+            pro = Runtime.getRuntime().exec("ping " + decrypt("123",ip)+" -t");
             buf = new BufferedReader(new InputStreamReader(pro.getInputStream(), Charset.forName("GBK")));
             int type;
             while((line = buf.readLine()) != null){
-                System.out.println(line);
                 type=(line.contains("ttl")||line.contains("TTL"))? Log.INFO:Log.ERROR;
                 if(!line.equals(""))
                     jdbcTemplate.update("insert into log ( `date`,`message`,`type`,`host`) VALUE ('"+
                             sdf.format(new Date())+"','"+line+"',"+type+",'"+decrypt("123",ip)+"')");
                 if(type!=status){
+                    status=type;
                     jdbcTemplate.update("UPDATE host SET status=? WHERE  ip=?",type,decrypt("123",ip));
                     Long id= jdbcTemplate.queryForObject("SELECT id FROM host WHERE ip=?",Long.class,decrypt("123",ip));
                     Map<String,Object> map = new HashMap<>();
                     map.put("id",id);
                     map.put("status",status+"");
                     tsCtrl.onMessage(JSON.toJSONString(map),null);
-                    status=type;
-                    System.out.println(type+"===="+status);
+
                 }
                 Thread.sleep(1000);
             }

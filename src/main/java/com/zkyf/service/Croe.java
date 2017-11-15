@@ -16,7 +16,7 @@ public class Croe {
     private JdbcTemplate jdbcTemplate;
 
     public List ListLog(String ip){
-        List list = jdbcTemplate.queryForList("SELECT * FROM log WHERE  host = ? ORDER BY date desc",ip);
+        List list = jdbcTemplate.queryForList("SELECT * FROM log WHERE type=1 AND  host = ? ORDER BY date desc",ip);
         return list;
     }
 
@@ -55,5 +55,9 @@ public class Croe {
     public  List findByIp(String ip){
        List list =  jdbcTemplate.queryForList("select * from host WHERE ip=?",ip);
         return list;
+    }
+
+    public void  clear(){
+       int i= jdbcTemplate.update("DELETE  FROM  log WHERE  date >DATE_SUB(CURDATE(), INTERVAL 1 MONTH)");
     }
 }

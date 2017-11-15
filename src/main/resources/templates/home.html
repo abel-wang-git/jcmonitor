@@ -33,7 +33,7 @@
                             <tr th:each="a:${ips}">
                                 <td th:text="${a['ip']}"></td>
                                 <td th:attr="id=${a['id']}"  class="status" style="color: green" th:if="${a['status']=='2'}">正常</td>
-                                <td class="status" style="color: red" th:if="${a['status']=='1'}">异常</td>
+                                <td th:attr="id=${a['id']}"  class="status" style="color: red" th:if="${a['status']=='1'}">异常</td>
                                 <td><a onclick="log(this)">日志</a></td>
                             </tr>
 
@@ -110,8 +110,14 @@
 
     //将消息显示在网页上
     function setMessageInnerHTML(innerHTML) {
-        var stat= $.parseJSON(innerHTML).status==1?'正常':'异常';
-        $("#"+$.parseJSON(innerHTML).id).text(stat);
+        var stat= $.parseJSON(innerHTML).status==1?'异常':'正常';
+        if ($.parseJSON(innerHTML).status==1) {
+            $("#"+$.parseJSON(innerHTML).id).css("color","red")
+        }else {
+            $("#"+$.parseJSON(innerHTML).id).css("color","green")
+        }
+        $("#"+$.parseJSON(innerHTML).id).text(stat)
+
     }
 
     //关闭连接
