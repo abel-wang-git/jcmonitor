@@ -1,14 +1,18 @@
-<html lang="en" xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  >
 <head>
     <div th:include="/fragment/head::head"></div>
 </head>
-<body>
-<div class="layui-container">
+<body style="background: url('/img/1.jpg') no-repeat;height: 100%;background-size:cover;">
+<div style="font-size:3em ;color:white;margin: 3px;">金财网业务健康情况实时监测系统</div>
+<div class="layui-container" >
+
     <div class="layui-row">
-        <div class="layui-col-md4 layui-col-md-offset4"
-             style="text-align: center;padding-top: 80px;">
-            <div style="border: solid silver;">
-                <form class="layui-form layui-form-pane" action="/login" method="post" style="margin: 15px;">
+        <div style="height: 30%"></div>
+
+        <div class="layui-col-md4 layui-col-md-offset6"
+             style="text-align: center;padding-top:30px;">
+            <div >
+                <form class="layui-form layui-form-pane" action="/login" method="post" style="padding: 25px 15px;background-color:#3f79c0">
                     <div class="layui-form-item">
                         <input type="text" name="title" lay-verify="required" placeholder="用户名"
                                autocomplete="off" class="layui-input"/>

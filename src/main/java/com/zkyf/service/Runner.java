@@ -55,8 +55,8 @@ public class Runner implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-        System.out.println(encrypt("192.168.1.1","123").toString());
-        System.out.println(decrypt("123","/TsI6RHijh4+n9jIlfgSQg=="));
+        System.out.println(encrypt("10.120.184.254","123").toString());
+        /*System.out.println(decrypt("123","/TsI6RHijh4+n9jIlfgSQg=="));*/
 
     }
 
